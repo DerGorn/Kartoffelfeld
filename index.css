@@ -1,0 +1,22 @@
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* Variables */
+  --menu-color: rgb(0, 0, 0);
+  /* Screen Variables */
+  --screen-background-color: rgb(100, 100, 100);
+}
+
+.screen {
+  overflow: hidden;
+  position: relative;
+  background-color: var(--screen-background-color);
+  flex-grow: 1;
+  align-self: normal;
+}
