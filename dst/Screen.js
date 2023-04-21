@@ -2,33 +2,19 @@ import { createElement } from "./DOM.js";
 class ScreenView {
     #update = true;
     #screen;
-    #title = "";
-    #childOrder = ["title"];
-    #onUpdate = {
-        title: (child) => {
-            child.innerText = this.#title;
-        },
-    };
+    #params = {};
+    #childOrder = [];
+    #onUpdate = {};
     constructor() {
         this.#screen = createElement({ id: "screen" }, "screen");
-        const id = this.#screen.id;
-        const children = this.#childOrder.map((name) => {
-            const el = createElement({ id }, name);
-            return el;
-        });
-        this.#screen.append(...children);
-        this.update();
         return this;
     }
-    get screen() {
-        return this.#screen;
-    }
-    setterPrototyp(field, value) {
-        this[`#${field}`] = value;
+    setParam(param, value) {
+        this.#params[param] = value;
         this.#update = true;
     }
-    set title(t) {
-        this.setterPrototyp("title", t);
+    getParam(param) {
+        return this.#params[param];
     }
     mountChild(child, { onUpdate = null, name = null, } = {}) {
         if (name == null)
@@ -38,7 +24,20 @@ class ScreenView {
         this.#childOrder.push(name);
         if (onUpdate != null)
             this.#onUpdate[name] = onUpdate;
+        this.#screen.append(child);
         return true;
+    }
+    unmountChild(name) {
+        delete this.#onUpdate[name];
+        const index = this.#childOrder.indexOf(name);
+        this.#childOrder.splice(index, 1);
+        this.#screen.children[index].remove();
+    }
+    appendTo(parent) {
+        parent.append(this.#screen);
+    }
+    remove() {
+        this.#screen.remove();
     }
     update() {
         if (!this.#update)

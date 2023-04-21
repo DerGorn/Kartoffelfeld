@@ -1,18 +1,44 @@
 import { createElement, body } from "./DOM.js";
+import Loop from "./GameLoop.js";
 import { ScreenView } from "./Screen.js";
 
-const createDeafultScreen = (): HTMLDivElement => {
+const createDeafultScreen = (): ScreenView => {
   const s = new ScreenView();
-  s.title = "t";
-  const screen = createElement({ id: "screen" }, "screen") as HTMLDivElement;
+  return s;
+};
+
+const buildPotatoFarm = (screen: ScreenView): ScreenView => {
+  const clickListener = createElement({ tag: "div" }, "windowCover");
+  screen.mountChild(createElement({ tag: "div" }, "title"), {
+    name: "title",
+    onUpdate: (child) => {
+      child.innerText = screen.getParam("title");
+    },
+  });
+  screen.mountChild(clickListener, {
+    name: "clickListener",
+  });
+  screen.mountChild(
+    createElement(
+      { style: { left: "0px", transform: "unset", animationDuration: "0s" } },
+      "title"
+    ),
+    {
+      name: "counter",
+      onUpdate: (child) => (child.innerText = screen.getParam("clickCount")),
+    }
+  );
+  screen.setParam("title", "Kartoffelfarm");
+  screen.setParam("clickCount", 0);
+  clickListener.addEventListener("click", () => {
+    const count = screen.getParam("clickCount");
+    screen.setParam("clickCount", typeof count === "number" ? count + 1 : 1);
+  });
+  screen.update();
   return screen;
 };
 
-const buildPotatoFarm = (screen: HTMLDivElement): HTMLDivElement => {
-  return screen;
-};
-
-const createScreen = (screen: "potatoFarm" = "potatoFarm"): HTMLDivElement => {
+const createScreen = (screen: "potatoFarm" = "potatoFarm"): ScreenView => {
   switch (screen) {
     case "potatoFarm":
       return buildPotatoFarm(createDeafultScreen());
@@ -23,4 +49,7 @@ const createScreen = (screen: "potatoFarm" = "potatoFarm"): HTMLDivElement => {
   }
 };
 
-body.append(createScreen());
+const farm = createScreen();
+farm.appendTo(body);
+Loop.registerScreen(farm, "farm");
+Loop.start();

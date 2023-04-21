@@ -7,10 +7,13 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  user-select: none;
   /* Variables */
   --menu-color: rgb(0, 0, 0);
   /* Screen Variables */
   --screen-background-color: rgb(100, 100, 100);
+  --screen-font-color: aliceblue;
+  --screen-font-border-color: black;
 }
 
 .screen {
@@ -19,4 +22,53 @@ body {
   background-color: var(--screen-background-color);
   flex-grow: 1;
   align-self: normal;
+}
+
+@keyframes screen-title-pop {
+  0% {
+    transform: translate(-50%, -50%);
+    top: 50%;
+    font-size: 4rem;
+    text-shadow: 4px 4px 2px var(--screen-font-border-color),
+      -2px -2px 4px var(--screen-font-border-color);
+  }
+  12% {
+    font-size: 4.2rem;
+  }
+  25% {
+    font-size: 4rem;
+    top: 50%;
+    text-shadow: 6px 6px 3px var(--screen-font-border-color),
+      -3px -3px 6px var(--screen-font-border-color);
+  }
+  100% {
+    top: 0%;
+    transform: translate(-50%);
+    font-size: 2.2rem;
+    text-shadow: 2px 2px 1px var(--screen-font-border-color),
+      -1px -1px 2px var(--screen-font-border-color);
+  }
+}
+
+.screen .title {
+  color: var(--screen-font-color);
+  position: absolute;
+  font-size: 2.2rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 1px var(--screen-font-border-color),
+    -1px -1px 2px var(--screen-font-border-color);
+  top: 0;
+  left: 50%;
+  transform: translate(-50%);
+  animation-name: screen-title-pop;
+  animation-duration: 4000ms;
+}
+
+.windowCover {
+  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
