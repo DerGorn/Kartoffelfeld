@@ -10,6 +10,7 @@ body {
   user-select: none;
   /* Variables */
   --menu-color: rgb(0, 0, 0);
+  --the-one-and-only-red: rgb(204, 0, 0);
   /* Screen Variables */
   --screen-background-color: rgb(100, 100, 100);
   --screen-font-color: aliceblue;
@@ -51,8 +52,8 @@ body {
 }
 
 .screen .title {
-  color: var(--screen-font-color);
   position: absolute;
+  color: var(--screen-font-color);
   font-size: 2.2rem;
   font-weight: bold;
   text-shadow: 2px 2px 1px var(--screen-font-border-color),
@@ -71,4 +72,43 @@ body {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.resourceContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.resourceIcon {
+  height: 2.2rem;
+  aspect-ratio: 1;
+}
+
+.resourceCount {
+  color: var(--screen-font-color);
+  font-size: 2.2rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 1px var(--screen-font-border-color),
+    -1px -1px 2px var(--screen-font-border-color);
+  padding: 0;
+  margin: 0;
+}
+
+div[id*="overlay"] {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999;
+  background-color: transparent;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+div[id*="potatoFarm"] {
+  background-image: linear-gradient(
+    var(--screen-background-color),
+    var(--the-one-and-only-red)
+  );
 }

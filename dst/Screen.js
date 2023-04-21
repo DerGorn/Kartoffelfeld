@@ -5,8 +5,11 @@ class ScreenView {
     #params = {};
     #childOrder = [];
     #onUpdate = {};
-    constructor() {
-        this.#screen = createElement({ id: "screen" }, "screen");
+    constructor(id = "") {
+        if (id === "") {
+            id = "screen";
+        }
+        this.#screen = createElement({ id: id }, "screen");
         return this;
     }
     setParam(param, value) {
@@ -43,7 +46,6 @@ class ScreenView {
         if (!this.#update)
             return false;
         const children = this.#screen.children;
-        console.log(this.#screen);
         for (let i = 0; i < children.length; i++) {
             const onUpdate = this.#onUpdate[this.#childOrder[i]];
             if (onUpdate != null)

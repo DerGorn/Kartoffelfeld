@@ -6,8 +6,11 @@ class ScreenView {
   #params: { [key: string]: any } = {};
   #childOrder: string[] = [];
   #onUpdate: { [key: string]: (child: HTMLElement) => void } = {};
-  constructor() {
-    this.#screen = createElement({ id: "screen" }, "screen") as HTMLDivElement;
+  constructor(id: string = "") {
+    if (id === "") {
+      id = "screen";
+    }
+    this.#screen = createElement({ id: id }, "screen") as HTMLDivElement;
     return this;
   }
 
@@ -56,7 +59,6 @@ class ScreenView {
   update(): Boolean {
     if (!this.#update) return false;
     const children = this.#screen.children;
-    console.log(this.#screen);
     for (let i = 0; i < children.length; i++) {
       const onUpdate = this.#onUpdate[this.#childOrder[i]];
       if (onUpdate != null) onUpdate(children[i] as HTMLElement);
