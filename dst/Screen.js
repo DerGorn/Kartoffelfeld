@@ -28,6 +28,7 @@ class ScreenView {
         if (onUpdate != null)
             this.#onUpdate[name] = onUpdate;
         this.#screen.append(child);
+        this.#update = true;
         return true;
     }
     unmountChild(name) {
@@ -45,13 +46,13 @@ class ScreenView {
     update() {
         if (!this.#update)
             return false;
+        this.#update = false;
         const children = this.#screen.children;
         for (let i = 0; i < children.length; i++) {
             const onUpdate = this.#onUpdate[this.#childOrder[i]];
             if (onUpdate != null)
                 onUpdate(children[i]);
         }
-        this.#update = false;
         return true;
     }
 }

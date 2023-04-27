@@ -1,5 +1,6 @@
 import Overlay from "./Overlay.js";
-import { r } from "./Resources.js";
+import { ResourceProductionSiteMap, r } from "./Resources.js";
+import ScreenManager from "./ScreenManager.js";
 const setCookie = (cookieName, cookieValue, expirationsDays = 365) => {
     const d = new Date();
     d.setTime(d.getTime() + expirationsDays * 24 * 60 * 60 * 1000);
@@ -32,10 +33,16 @@ const saveProgress = () => {
 const loadProgress = () => {
     const cookie = getCookie("resourceQuantity");
     if (cookie === "")
-        return;
+        return false;
     const resourceQuantity = JSON.parse(cookie);
     Object.entries(resourceQuantity).forEach(([resource, quantity]) => {
+        ScreenManager.unlockScreen(ResourceProductionSiteMap[resource]);
         Overlay.setResource(resource, quantity);
     });
+    return true;
 };
-export { saveProgress, loadProgress };
+const existSave = () => {
+    const cookie = getCookie("resourceQuantity");
+    return !(cookie === "");
+};
+export { saveProgress, loadProgress, existSave };

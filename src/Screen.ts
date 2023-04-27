@@ -38,6 +38,7 @@ class ScreenView {
     this.#childOrder.push(name);
     if (onUpdate != null) this.#onUpdate[name] = onUpdate;
     this.#screen.append(child);
+    this.#update = true;
     return true;
   }
 
@@ -58,12 +59,12 @@ class ScreenView {
 
   update(): Boolean {
     if (!this.#update) return false;
+    this.#update = false;
     const children = this.#screen.children;
     for (let i = 0; i < children.length; i++) {
       const onUpdate = this.#onUpdate[this.#childOrder[i]];
       if (onUpdate != null) onUpdate(children[i] as HTMLElement);
     }
-    this.#update = false;
     return true;
   }
 }

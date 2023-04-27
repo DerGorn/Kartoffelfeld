@@ -1,4 +1,5 @@
 body {
+  background-color: var(--screen-background-color);
   margin: 0;
   padding: 0;
   width: 100vw;
@@ -11,10 +12,92 @@ body {
   /* Variables */
   --menu-color: rgb(0, 0, 0);
   --the-one-and-only-red: rgb(204, 0, 0);
+  --triangle-size: 15px;
+  --triangle-border-size: 20px;
+  --border-radius: 10px;
   /* Screen Variables */
   --screen-background-color: rgb(100, 100, 100);
   --screen-font-color: aliceblue;
   --screen-font-border-color: black;
+  /* Shop Variables */
+  --shop-background-color: rgb(36, 33, 33);
+}
+
+.notifier {
+  z-index: 1004;
+  padding: 50px;
+  color: var(--screen-font-color);
+  font-size: 1.6rem;
+  text-align: center;
+  text-shadow: 2px 2px 1px var(--screen-font-border-color);
+  box-sizing: border-box;
+  width: max-content;
+  height: max-content;
+  overflow-wrap: break-word;
+  max-width: 80%;
+  max-height: 80%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: var(--border-radius);
+  border: 2px solid var(--screen-background-color);
+  transform: translate(-50%, -50%);
+  background-color: var(--shop-background-color);
+  transition: opacity 1s;
+}
+
+.triangle,
+.triangleBorder {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.triangle {
+  border-top: var(--triangle-size) solid transparent;
+  border-bottom: var(--triangle-size) solid transparent;
+}
+
+.triangleBorder {
+  border-top: var(--triangle-border-size) solid transparent;
+  border-bottom: var(--triangle-border-size) solid transparent;
+}
+
+.triangleHover {
+  border-left-color: var(--the-one-and-only-red);
+  border-right-color: var(--the-one-and-only-red);
+}
+
+.upgradeTitle {
+  color: var(--screen-font-color);
+  font-size: 1.6rem;
+  text-align: center;
+  margin-top: 5px;
+  text-shadow: 2px 2px 1px var(--screen-font-border-color);
+}
+
+.costText {
+  color: var(--screen-font-color);
+  font-size: 1.8rem;
+  margin-top: 5px;
+  text-shadow: 2px 2px 1px var(--screen-font-border-color);
+}
+
+.costIcon {
+  height: 40px;
+  background-color: var(--screen-font-color);
+  border-radius: 50%;
+  border: 2px solid var(--screen-font-border-color);
+}
+
+.costHolder {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 .screen {
@@ -72,12 +155,14 @@ body {
   position: absolute;
   top: 0;
   left: 0;
+  cursor: var(--resource-url);
 }
 
 .resourceContainer {
   display: flex;
-  flex-direction: column;
+  flex-direction: row-reverse;
   align-items: center;
+  gap: 10px;
 }
 
 .resourceIcon {
@@ -86,6 +171,7 @@ body {
 }
 
 .resourceCount {
+  font-family: Courier "Courier New", Courier, monospace, monospace;
   color: var(--screen-font-color);
   font-size: 2.2rem;
   font-weight: bold;
@@ -95,20 +181,115 @@ body {
   margin: 0;
 }
 
+.shopHolder {
+  --padding: 20px;
+  background-color: var(--shop-background-color);
+  height: calc(100% - 40px);
+  width: calc(100% - 40px - 2 * var(--padding));
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: var(--border-radius);
+  border: 2px solid var(--screen-background-color);
+  padding-left: var(--padding);
+  padding-right: var(--padding);
+  transition: opacity 2s;
+}
+
+.shopSacrifice {
+  height: 100%;
+  width: 100%;
+  overflow-x: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+} /* width */
+::-webkit-scrollbar {
+  height: 5px;
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--screen-background-color);
+  border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--shop-background-color);
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--the-one-and-only-red);
+}
+
+.upgradeHolder {
+  height: 90%;
+  aspect-ratio: 2/3;
+  border-radius: var(--border-radius);
+  border: 2px solid var(--screen-background-color);
+  cursor: pointer;
+}
+
+.shopToggle {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  width: calc(100% - 40px);
+  height: 20px;
+  cursor: ns-resize;
+  transition: background-color 1s;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
 div[id*="overlay"] {
   position: absolute;
-  width: 100vw;
-  height: 100vh;
+  width: calc(100vw - 5px);
+  height: calc(100vh - 5px);
   z-index: 999;
   background-color: transparent;
   display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
+  gap: 10px;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+  padding-right: 5px;
+  padding-top: 5px;
 }
 
-div[id*="potatoFarm"] {
+.screenManager {
+  z-index: 1002;
+  position: absolute;
+  top: 0px;
+  left: 50%;
+  transform: translate(-50%);
+  width: 80vw;
+  height: calc(2 * var(--triangle-border-size));
+  background-color: transparent;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding-top: 5px;
+}
+
+div[id*="potatofarm"] {
   background-image: linear-gradient(
     var(--screen-background-color),
     var(--the-one-and-only-red)
   );
+}
+
+div[id*="shop"] {
+  background-color: var(--the-one-and-only-red);
+  z-index: 1001;
+  flex-grow: 0.5;
+  position: relative;
+  transition: flex-grow 2s;
 }

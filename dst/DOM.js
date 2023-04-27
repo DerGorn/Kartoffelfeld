@@ -3,6 +3,9 @@ let idCounter = 0;
 const getUniqueId = (id = "") => {
     return `${id}_${idCounter++}`;
 };
+const formatNumber = (num) => {
+    return num < 100000 ? num.toFixed(0) : num.toPrecision(3).replace("+", "");
+};
 const createElement = ({ tag = "div", id = "", style = {}, } = {}, ...classes) => {
     const el = document.createElement(tag);
     el.id = getUniqueId(id);
@@ -17,4 +20,4 @@ const createElement = ({ tag = "div", id = "", style = {}, } = {}, ...classes) =
     });
     return el;
 };
-export { createElement, body };
+export { createElement, body, formatNumber };

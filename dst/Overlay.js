@@ -1,4 +1,4 @@
-import { body, createElement } from "./DOM.js";
+import { body, createElement, formatNumber } from "./DOM.js";
 import Loop from "./GameLoop.js";
 import { ScreenView } from "./Screen.js";
 const overlay = new ScreenView("overlay");
@@ -23,13 +23,17 @@ const addResource = (name) => {
     overlay.mountChild(container, {
         name,
         onUpdate: () => {
-            count.textContent = `${resourceQuantity[name]}`;
+            const quantity = resourceQuantity[name];
+            if (quantity === undefined)
+                return;
+            count.textContent = formatNumber(quantity);
         },
     });
 };
 const Overlay = {
     start: () => {
         overlay.appendTo(body);
+        Overlay.setResource("potato", 0);
         Loop.registerScreen(overlay, "overlay");
     },
     addResource,
