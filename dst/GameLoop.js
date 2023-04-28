@@ -37,3 +37,4 @@ const Loop = {
     removeScreen,
 };
 export default Loop;
+export { TARGETFPS };

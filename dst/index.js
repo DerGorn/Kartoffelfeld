@@ -5,12 +5,13 @@ import Overlay from "./Overlay.js";
 import { existSave, loadProgress } from "./Progress.js";
 import ScreenManager from "./ScreenManager.js";
 import Shop from "./Shop.js";
+Loop.start();
 if (existSave()) {
     ScreenManager.start();
     Overlay.start();
-    loadProgress();
     Clicker.start();
     Shop.start();
+    loadProgress();
 }
 else {
     Notifier.show("Wilkommen auf dem Kartoffelfeld Kamerad. Um den gerechten Kampf zu führen bedarf es Kraft. Kartoffeln geben kraft, also ernte so viele wie du kannst.", {
@@ -23,4 +24,3 @@ else {
     });
 }
 Notifier.start();
-Loop.start();

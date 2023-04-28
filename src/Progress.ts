@@ -1,6 +1,7 @@
 import Overlay from "./Overlay.js";
 import { ResourceProductionSiteMap, Resources, r } from "./Resources.js";
 import ScreenManager from "./ScreenManager.js";
+import Shop, { Id, boughtUpgrades } from "./Shop.js";
 
 const setCookie = (
   cookieName: string,
@@ -35,6 +36,7 @@ const saveProgress = () => {
     if (quantity !== undefined) resourceQuantity[resource] = quantity;
   });
   setCookie("resourceQuantity", JSON.stringify(resourceQuantity));
+  setCookie("boughtUpgrades", JSON.stringify(boughtUpgrades));
 };
 
 const loadProgress = () => {
@@ -47,6 +49,13 @@ const loadProgress = () => {
       Overlay.setResource(resource, quantity);
     }
   );
+  let boughtUpgrade = JSON.parse(getCookie("boughtUpgrades")) as {
+    [key in Id]?: number;
+  };
+  Object.entries(boughtUpgrade).forEach(([id, amount]) => {
+    //@ts-ignore
+    for (let i = 0; i < amount; i++) Shop.unlockUpgrade(Number(id) as Id);
+  });
   return true;
 };
 

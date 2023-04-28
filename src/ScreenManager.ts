@@ -1,9 +1,10 @@
-import Loop from "./GameLoop.js";
+import Loop, { TARGETFPS } from "./GameLoop.js";
 import { ProductionSites, ProductionSiteResourceMap, p } from "./Resources.js";
 import { ScreenView } from "./Screen.js";
-import { createElement, body } from "./DOM.js";
+import { createElement, body, formatNumber } from "./DOM.js";
 import Clicker from "./Clicker.js";
 import Shop from "./Shop.js";
+import Overlay from "./Overlay.js";
 
 const createArrow = (left: Boolean = true): HTMLDivElement => {
   const clickArrow = () => {
@@ -104,6 +105,41 @@ const createProductionSiteScreen = (site: ProductionSites): ScreenView => {
     name: "title",
     onUpdate: (child) => {
       child.innerText = s.getParam("title");
+    },
+  });
+  const numberOfSeconds = 3;
+  const windowSize = numberOfSeconds * TARGETFPS;
+  const FrameWindow: number[] = Array(windowSize).fill(0);
+  let start = 0;
+  let current = 0;
+  let lastFrame = -1;
+  const addFrame = () => {
+    current = (current + 1) % windowSize;
+    if (current === start) {
+      start = (start + 1) % windowSize;
+    }
+    const amount = Overlay.getResource(ProductionSiteResourceMap[site]);
+    if (amount === undefined) return;
+    if (lastFrame < 0) lastFrame = amount;
+    const diff = amount - lastFrame;
+    FrameWindow[current] = diff > 0 ? diff : 0;
+    lastFrame = amount;
+  };
+  const timeAverage = () => {
+    let total = 0;
+    for (let i = start; i !== current; i = (i + 1) % windowSize) {
+      total += FrameWindow[i];
+    }
+    return total / numberOfSeconds;
+  };
+  s.mountChild(createElement({}, "productionPerSecond"), {
+    name: "production",
+    onUpdate: (child) => {
+      addFrame();
+      const amount = timeAverage();
+      child.innerText =
+        amount === undefined ? "NaN" : `${formatNumber(amount)}/s`;
+      s.setParam("update", true);
     },
   });
   s.setParam("title", ProductionSiteTitleMap[site]);

@@ -45,13 +45,17 @@ const upgrades: { [key in Id]: Upgrade } = {
     id: 1,
     title: "Bauer",
     baseCost: { amount: 10, resource: "potato" },
-    effect: () => {},
+    effect: () => {
+      Overlay.setIdleGain("potato", (g) => g + 1);
+    },
     growth: function growth() {
       this.baseCost.amount *= 1 + this.level * 0.02;
     },
     level: 0,
   },
 };
+
+const boughtUpgrades: { [key in Id]?: number } = {};
 
 const upgradesPerProductionSite: { [key in ProductionSites]: Id[] } = {
   potatofarm: [0, 1],
@@ -104,7 +108,6 @@ const createUpgrade = (upgrade: Upgrade): HTMLDivElement => {
       : "");
   const costHolder = createElement({}, "costHolder");
   const cost = createElement({}, "costText");
-  upgrade.growth();
   cost.innerText = formatNumber(upgrade.baseCost.amount);
   const costIcon = createElement(
     { tag: "img" },
@@ -117,19 +120,8 @@ const createUpgrade = (upgrade: Upgrade): HTMLDivElement => {
     if (!payUpgrade(upgrade)) {
       return;
     }
-    upgrade.effect();
-    unlockUpdate(upgrade.id);
+    unlockUpgrade(upgrade.id);
     screen.setParam("update", true);
-    if (upgrade.unique) {
-      holder.remove();
-      unlockedUpgrades.splice(unlockedUpgrades.indexOf(upgrade.id), 1);
-      return;
-    }
-    if (upgrade.level === undefined)
-      throw new Error(
-        `Defect Upgrade. It is neither unique nor levelable. Title: ${upgrade.title}, Id: ${upgrade.id}`
-      );
-    upgrade.level++;
   });
   return holder;
 };
@@ -205,10 +197,28 @@ const payUpgrade = (upgrade: Upgrade) => {
   return true;
 };
 
-const unlockUpdate = (id: Id) => {
+const unlockUpgrade = (id: Id) => {
+  const upgrade = upgrades[id];
+  const holder = document.querySelector(
+    `div[id^="${upgrade.title}"]`
+  ) as HTMLDivElement;
+  if (boughtUpgrades[id] === undefined) boughtUpgrades[id] = 0;
+  (boughtUpgrades[id] as number) += 1;
+  upgrade.effect();
   upgradeUnlocks[id]?.forEach((i) => {
     if (!unlockedUpgrades.includes(i)) unlockedUpgrades.push(i);
   });
+  if (upgrade.unique) {
+    if (holder !== null) holder.remove();
+    unlockedUpgrades.splice(unlockedUpgrades.indexOf(upgrade.id), 1);
+    return;
+  }
+  if (upgrade.level === undefined)
+    throw new Error(
+      `Defect Upgrade. It is neither unique nor levelable. Title: ${upgrade.title}, Id: ${upgrade.id}`
+    );
+  upgrade.level++;
+  upgrade.growth();
 };
 
 const Shop = {
@@ -220,7 +230,8 @@ const Shop = {
     activeScreen = site;
     screen.setParam("update", true);
   },
-  unlockUpdate,
+  unlockUpgrade,
 };
 
 export default Shop;
+export { boughtUpgrades, Id };

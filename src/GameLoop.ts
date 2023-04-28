@@ -44,3 +44,4 @@ const Loop = {
 };
 
 export default Loop;
+export { TARGETFPS };

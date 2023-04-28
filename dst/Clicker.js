@@ -15,15 +15,16 @@ const clickerStrength = {
     uranium: 1,
     nuke: 0,
 };
-const clicker = createElement({ tag: "div", id: "clicker" }, "windowCover");
-clicker.addEventListener("click", () => {
+const click = () => {
     const count = Overlay.getResource(clickedResource);
     if (count === undefined) {
         console.log("There are no", clickedResource);
         return;
     }
     Overlay.setResource(clickedResource, count + clickerStrength[clickedResource]);
-});
+};
+const clicker = createElement({ tag: "div", id: "clicker" }, "windowCover");
+clicker.addEventListener("click", click);
 let clickedResource;
 const setResource = (name) => {
     clickedResource = name;

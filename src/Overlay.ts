@@ -1,10 +1,24 @@
 import { body, createElement, formatNumber } from "./DOM.js";
-import Loop from "./GameLoop.js";
+import Loop, { TARGETFPS } from "./GameLoop.js";
 import { Resources } from "./Resources.js";
 import { ScreenView } from "./Screen.js";
 
 const overlay = new ScreenView("overlay");
 const resourceQuantity: { [key in Resources]?: number } = {};
+
+const idleGain: { [key in Resources]?: number } = {};
+
+const setIdleGain = (
+  name: Resources,
+  setterFunction: (gain: number) => number
+) => {
+  let gain = idleGain[name];
+  if (gain === undefined) {
+    addResource(name);
+    gain = 0;
+  }
+  idleGain[name] = setterFunction(gain);
+};
 
 const setResource = (name: Resources, value: number) => {
   if (resourceQuantity[name] === undefined) addResource(name);
@@ -18,6 +32,7 @@ const getResource = (name: Resources) => {
 
 const addResource = (name: Resources) => {
   resourceQuantity[name] = 0;
+  idleGain[name] = 0;
   const container = createElement({ id: name }, "resourceContainer");
   const icon = createElement(
     { tag: "img" },
@@ -35,7 +50,11 @@ const addResource = (name: Resources) => {
     onUpdate: () => {
       const quantity = resourceQuantity[name];
       if (quantity === undefined) return;
+      if (idleGain[name])
+        (resourceQuantity[name] as number) +=
+          (idleGain[name] as number) / TARGETFPS;
       count.textContent = formatNumber(quantity);
+      overlay.setParam("update", true);
     },
   });
 };
@@ -49,6 +68,7 @@ const Overlay = {
   addResource,
   setResource,
   getResource,
+  setIdleGain,
 };
 
 export default Overlay;

@@ -23,6 +23,15 @@ body {
   --shop-background-color: rgb(36, 33, 33);
 }
 
+.productionPerSecond {
+  color: var(--screen-font-color);
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: left;
+  text-shadow: 2px 2px 1px var(--screen-font-border-color),
+    -1px -1px 1px var(--screen-font-border-color);
+}
+
 .notifier {
   z-index: 1004;
   padding: 50px;
