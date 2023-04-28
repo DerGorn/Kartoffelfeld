@@ -37,6 +37,7 @@ const upgrades: { [key in Id]: Upgrade } = {
     baseCost: { amount: 100, resource: "potato" },
     effect: () => {
       Clicker.setClickerStrength("potato", (s) => s + 1);
+      Notifier.show("Du wirst stärker und kannst schneller Kartoffeln ernten.");
     },
     growth: () => {},
     unique: true,
@@ -77,7 +78,7 @@ const upgradeUnlocks: { [key in Id]?: Id[] } = {
   0: [1],
 };
 
-const unlockedUpgrades: Id[] = [0];
+let unlockedUpgrades: Id[] = [0];
 
 const resourceNameMap: { [key in Resources]: string } = {
   potato: "Kartoffeln",
@@ -233,5 +234,9 @@ const Shop = {
   unlockUpgrade,
 };
 
+const setUnlocked = (unlocked: Id[]) => {
+  unlockedUpgrades = unlocked;
+};
+
 export default Shop;
-export { boughtUpgrades, Id };
+export { boughtUpgrades, Id, unlockedUpgrades, setUnlocked, upgrades };

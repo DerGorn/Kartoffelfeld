@@ -56,4 +56,4 @@ const Overlay = {
     setIdleGain,
 };
 export default Overlay;
-export { resourceQuantity };
+export { resourceQuantity, idleGain };

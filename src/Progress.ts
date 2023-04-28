@@ -1,7 +1,14 @@
-import Overlay from "./Overlay.js";
+import { clickerStrength } from "./Clicker.js";
+import Overlay, { idleGain } from "./Overlay.js";
 import { ResourceProductionSiteMap, Resources, r } from "./Resources.js";
 import ScreenManager from "./ScreenManager.js";
-import Shop, { Id, boughtUpgrades } from "./Shop.js";
+import {
+  Id,
+  boughtUpgrades,
+  setUnlocked,
+  unlockedUpgrades,
+  upgrades,
+} from "./Shop.js";
 
 const setCookie = (
   cookieName: string,
@@ -37,6 +44,9 @@ const saveProgress = () => {
   });
   setCookie("resourceQuantity", JSON.stringify(resourceQuantity));
   setCookie("boughtUpgrades", JSON.stringify(boughtUpgrades));
+  setCookie("idleGain", JSON.stringify(idleGain));
+  setCookie("unlockedUpgrades", JSON.stringify(unlockedUpgrades));
+  setCookie("clickerStrength", JSON.stringify(clickerStrength));
 };
 
 const loadProgress = () => {
@@ -49,13 +59,32 @@ const loadProgress = () => {
       Overlay.setResource(resource, quantity);
     }
   );
-  let boughtUpgrade = JSON.parse(getCookie("boughtUpgrades")) as {
+  const boughtUpgrade = JSON.parse(getCookie("boughtUpgrades")) as {
     [key in Id]?: number;
   };
-  Object.entries(boughtUpgrade).forEach(([id, amount]) => {
+  Object.entries(boughtUpgrade).forEach(([id, amount]: [any, number]) => {
     //@ts-ignore
-    for (let i = 0; i < amount; i++) Shop.unlockUpgrade(Number(id) as Id);
+    boughtUpgrades[id] = amount;
+    //@ts-ignore
+    const upgrade = upgrades[id];
+    if (!upgrade.unique) {
+      for (let i = 0; i < amount; i++) {
+        upgrade.level++;
+        upgrade.growth();
+      }
+    }
   });
+  const gain = JSON.parse(getCookie("idleGain"));
+  Object.entries(gain).forEach(
+    ([resource, amount]: [Resources, number]) => (idleGain[resource] = amount)
+  );
+  const unlocks = JSON.parse(getCookie("unlockedUpgrades"));
+  setUnlocked(unlocks);
+  const strength = JSON.parse(getCookie("clickerStrength"));
+  Object.entries(strength).forEach(
+    ([resource, amount]: [Resources, number]) =>
+      (clickerStrength[resource] = amount)
+  );
   return true;
 };
 

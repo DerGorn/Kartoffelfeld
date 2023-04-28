@@ -11,6 +11,7 @@ const upgrades = {
         baseCost: { amount: 100, resource: "potato" },
         effect: () => {
             Clicker.setClickerStrength("potato", (s) => s + 1);
+            Notifier.show("Du wirst stärker und kannst schneller Kartoffeln ernten.");
         },
         growth: () => { },
         unique: true,
@@ -47,7 +48,7 @@ const upgradesPerProductionSite = {
 const upgradeUnlocks = {
     0: [1],
 };
-const unlockedUpgrades = [0];
+let unlockedUpgrades = [0];
 const resourceNameMap = {
     potato: "Kartoffeln",
     copper: "Kupfer",
@@ -173,5 +174,8 @@ const Shop = {
     },
     unlockUpgrade,
 };
+const setUnlocked = (unlocked) => {
+    unlockedUpgrades = unlocked;
+};
 export default Shop;
-export { boughtUpgrades };
+export { boughtUpgrades, unlockedUpgrades, setUnlocked, upgrades };

@@ -1,7 +1,8 @@
-import Overlay from "./Overlay.js";
+import { clickerStrength } from "./Clicker.js";
+import Overlay, { idleGain } from "./Overlay.js";
 import { ResourceProductionSiteMap, r } from "./Resources.js";
 import ScreenManager from "./ScreenManager.js";
-import Shop, { boughtUpgrades } from "./Shop.js";
+import { boughtUpgrades, setUnlocked, unlockedUpgrades, upgrades, } from "./Shop.js";
 const setCookie = (cookieName, cookieValue, expirationsDays = 365) => {
     const d = new Date();
     d.setTime(d.getTime() + expirationsDays * 24 * 60 * 60 * 1000);
@@ -31,6 +32,9 @@ const saveProgress = () => {
     });
     setCookie("resourceQuantity", JSON.stringify(resourceQuantity));
     setCookie("boughtUpgrades", JSON.stringify(boughtUpgrades));
+    setCookie("idleGain", JSON.stringify(idleGain));
+    setCookie("unlockedUpgrades", JSON.stringify(unlockedUpgrades));
+    setCookie("clickerStrength", JSON.stringify(clickerStrength));
 };
 const loadProgress = () => {
     const cookie = getCookie("resourceQuantity");
@@ -41,11 +45,23 @@ const loadProgress = () => {
         ScreenManager.unlockScreen(ResourceProductionSiteMap[resource]);
         Overlay.setResource(resource, quantity);
     });
-    let boughtUpgrade = JSON.parse(getCookie("boughtUpgrades"));
+    const boughtUpgrade = JSON.parse(getCookie("boughtUpgrades"));
     Object.entries(boughtUpgrade).forEach(([id, amount]) => {
-        for (let i = 0; i < amount; i++)
-            Shop.unlockUpgrade(Number(id));
+        boughtUpgrades[id] = amount;
+        const upgrade = upgrades[id];
+        if (!upgrade.unique) {
+            for (let i = 0; i < amount; i++) {
+                upgrade.level++;
+                upgrade.growth();
+            }
+        }
     });
+    const gain = JSON.parse(getCookie("idleGain"));
+    Object.entries(gain).forEach(([resource, amount]) => (idleGain[resource] = amount));
+    const unlocks = JSON.parse(getCookie("unlockedUpgrades"));
+    setUnlocked(unlocks);
+    const strength = JSON.parse(getCookie("clickerStrength"));
+    Object.entries(strength).forEach(([resource, amount]) => (clickerStrength[resource] = amount));
     return true;
 };
 const existSave = () => {

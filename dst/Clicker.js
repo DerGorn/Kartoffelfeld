@@ -43,3 +43,4 @@ const Clicker = {
     setClickerStrength,
 };
 export default Clicker;
+export { clickerStrength };
