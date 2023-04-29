@@ -4,6 +4,7 @@ import Loop from "./GameLoop.js";
 import Notifier from "./Notifier.js";
 import Overlay from "./Overlay.js";
 import { ScreenView } from "./Screen.js";
+import ScreenManager from "./ScreenManager.js";
 const upgrades = {
     0: {
         id: 0,
@@ -28,10 +29,22 @@ const upgrades = {
         },
         level: 0,
     },
+    2: {
+        id: 2,
+        title: "Erkunde die Höhle",
+        baseCost: { amount: 10000, resource: "potato" },
+        effect: () => {
+            ScreenManager.unlockScreen("coppermine");
+            ScreenManager.setActiveScreen("coppermine");
+            Notifier.show("Du hast eine Kupferader in der Höhle gefunden. Baue es ab, vielleicht wird es noch hilfreich werden.");
+        },
+        growth: () => { },
+        unique: true,
+    },
 };
 const boughtUpgrades = {};
 const upgradesPerProductionSite = {
-    potatofarm: [0, 1],
+    potatofarm: [0, 1, 2],
     coppermine: [],
     powerplant: [],
     forest: [],
@@ -47,6 +60,7 @@ const upgradesPerProductionSite = {
 };
 const upgradeUnlocks = {
     0: [1],
+    1: [2],
 };
 let unlockedUpgrades = [0];
 const resourceNameMap = {

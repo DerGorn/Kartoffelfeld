@@ -5,6 +5,7 @@ import Notifier from "./Notifier.js";
 import Overlay from "./Overlay.js";
 import { ProductionSites, Resources } from "./Resources.js";
 import { ScreenView } from "./Screen.js";
+import ScreenManager from "./ScreenManager.js";
 
 type Cost = {
   amount: number;
@@ -28,7 +29,7 @@ type Enumerate<
   ? Acc[number]
   : Enumerate<N, [...Acc, Acc["length"]]>;
 
-type Id = Enumerate<2>;
+type Id = Enumerate<3>;
 
 const upgrades: { [key in Id]: Upgrade } = {
   0: {
@@ -54,12 +55,26 @@ const upgrades: { [key in Id]: Upgrade } = {
     },
     level: 0,
   },
+  2: {
+    id: 2,
+    title: "Erkunde die Höhle",
+    baseCost: { amount: 10000, resource: "potato" },
+    effect: () => {
+      ScreenManager.unlockScreen("coppermine");
+      ScreenManager.setActiveScreen("coppermine");
+      Notifier.show(
+        "Du hast eine Kupferader in der Höhle gefunden. Baue es ab, vielleicht wird es noch hilfreich werden."
+      );
+    },
+    growth: () => {},
+    unique: true,
+  },
 };
 
 const boughtUpgrades: { [key in Id]?: number } = {};
 
 const upgradesPerProductionSite: { [key in ProductionSites]: Id[] } = {
-  potatofarm: [0, 1],
+  potatofarm: [0, 1, 2],
   coppermine: [],
   powerplant: [],
   forest: [],
@@ -76,6 +91,7 @@ const upgradesPerProductionSite: { [key in ProductionSites]: Id[] } = {
 
 const upgradeUnlocks: { [key in Id]?: Id[] } = {
   0: [1],
+  1: [2],
 };
 
 let unlockedUpgrades: Id[] = [0];

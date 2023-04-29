@@ -1,7 +1,12 @@
 import { clickerStrength } from "./Clicker.js";
 import Overlay, { idleGain } from "./Overlay.js";
-import { ResourceProductionSiteMap, Resources, r } from "./Resources.js";
-import ScreenManager from "./ScreenManager.js";
+import {
+  ProductionSites,
+  ResourceProductionSiteMap,
+  Resources,
+  r,
+} from "./Resources.js";
+import ScreenManager, { unlockedScreens } from "./ScreenManager.js";
 import {
   Id,
   boughtUpgrades,
@@ -47,6 +52,7 @@ const saveProgress = () => {
   setCookie("idleGain", JSON.stringify(idleGain));
   setCookie("unlockedUpgrades", JSON.stringify(unlockedUpgrades));
   setCookie("clickerStrength", JSON.stringify(clickerStrength));
+  setCookie("unlockedScreens", JSON.stringify(Object.keys(unlockedScreens)));
 };
 
 const loadProgress = () => {
@@ -84,6 +90,10 @@ const loadProgress = () => {
   Object.entries(strength).forEach(
     ([resource, amount]: [Resources, number]) =>
       (clickerStrength[resource] = amount)
+  );
+  const screens = JSON.parse(getCookie("unlockedScreens"));
+  screens.forEach((screen: ProductionSites) =>
+    ScreenManager.unlockScreen(screen)
   );
   return true;
 };

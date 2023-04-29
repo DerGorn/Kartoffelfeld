@@ -1,7 +1,7 @@
 import { clickerStrength } from "./Clicker.js";
 import Overlay, { idleGain } from "./Overlay.js";
-import { ResourceProductionSiteMap, r } from "./Resources.js";
-import ScreenManager from "./ScreenManager.js";
+import { ResourceProductionSiteMap, r, } from "./Resources.js";
+import ScreenManager, { unlockedScreens } from "./ScreenManager.js";
 import { boughtUpgrades, setUnlocked, unlockedUpgrades, upgrades, } from "./Shop.js";
 const setCookie = (cookieName, cookieValue, expirationsDays = 365) => {
     const d = new Date();
@@ -35,6 +35,7 @@ const saveProgress = () => {
     setCookie("idleGain", JSON.stringify(idleGain));
     setCookie("unlockedUpgrades", JSON.stringify(unlockedUpgrades));
     setCookie("clickerStrength", JSON.stringify(clickerStrength));
+    setCookie("unlockedScreens", JSON.stringify(Object.keys(unlockedScreens)));
 };
 const loadProgress = () => {
     const cookie = getCookie("resourceQuantity");
@@ -62,6 +63,8 @@ const loadProgress = () => {
     setUnlocked(unlocks);
     const strength = JSON.parse(getCookie("clickerStrength"));
     Object.entries(strength).forEach(([resource, amount]) => (clickerStrength[resource] = amount));
+    const screens = JSON.parse(getCookie("unlockedScreens"));
+    screens.forEach((screen) => ScreenManager.unlockScreen(screen));
     return true;
 };
 const existSave = () => {

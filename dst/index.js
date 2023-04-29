@@ -2,10 +2,11 @@ import Clicker from "./Clicker.js";
 import Loop from "./GameLoop.js";
 import Notifier from "./Notifier.js";
 import Overlay from "./Overlay.js";
-import { existSave, loadProgress } from "./Progress.js";
+import { existSave, loadProgress, saveProgress } from "./Progress.js";
 import ScreenManager from "./ScreenManager.js";
 import Shop from "./Shop.js";
 Loop.start();
+Notifier.start();
 if (existSave()) {
     ScreenManager.start();
     Overlay.start();
@@ -23,4 +24,4 @@ else {
         },
     });
 }
-Notifier.start();
+window.addEventListener("unload", saveProgress);

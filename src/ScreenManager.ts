@@ -78,6 +78,9 @@ const setArrowVisibility = () => {
   return true;
 };
 
+const manager = createElement({
+  style: { flexGrow: "1", display: "flex", width: "100%" },
+});
 const screen = createElement({}, "screenManager");
 const left = createArrow();
 const right = createArrow(false);
@@ -150,6 +153,7 @@ const createProductionSiteScreen = (site: ProductionSites): ScreenView => {
 let unlockedScreens: { [key in ProductionSites]?: ScreenView } = {};
 const unlockScreen = (site: ProductionSites) => {
   if (site in unlockedScreens) return false;
+  Overlay.addResource(ProductionSiteResourceMap[site]);
   unlockedScreens[site] = createProductionSiteScreen(site);
   setArrowVisibility();
   return true;
@@ -158,13 +162,12 @@ const unlockScreen = (site: ProductionSites) => {
 let activeScreen: ProductionSites | null = null;
 const setActiveScreen = (site: ProductionSites) => {
   if (!(site in unlockedScreens)) return false;
-  Clicker.setResource(ProductionSiteResourceMap[site]);
   if (activeScreen) {
     unlockedScreens[activeScreen]?.remove();
     Loop.removeScreen(activeScreen);
   }
   activeScreen = site;
-  unlockedScreens[site]?.appendTo(body);
+  unlockedScreens[site]?.appendTo(manager);
   Loop.registerScreen(unlockedScreens[site] as ScreenView, site);
   Clicker.setResource(ProductionSiteResourceMap[site]);
   setArrowVisibility();
@@ -176,6 +179,7 @@ const ScreenManager = {
   unlockScreen,
   start: () => {
     body.append(screen);
+    body.append(manager);
     unlockScreen("potatofarm");
     setActiveScreen("potatofarm");
   },
@@ -183,4 +187,4 @@ const ScreenManager = {
 };
 
 export default ScreenManager;
-export { activeScreen };
+export { activeScreen, unlockedScreens };
